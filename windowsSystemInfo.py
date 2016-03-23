@@ -2,8 +2,6 @@ import socket,struct
 import os
 import subprocess
 import platform 
-from ctypes import *
-from ctypes.wintypes import *
 
 def get_netmask(ip):
 	proc = subprocess.Popen('ipconfig',stdout=subprocess.PIPE)
