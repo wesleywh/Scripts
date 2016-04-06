@@ -55,13 +55,15 @@ def windowsRam():
 	result = process.read()
 	process.close()
 	memory = 0
+	slots = 0;
 	for value in result.split("\n"):
 		if value.strip('').strip(' ').isdigit():
 			memory += int(value.strip('').strip(' '))
-
+			if value.strip('').strip(' ') != 0:
+				slots += 1;
 	# 1 GB = 1,073,741,824 Bytes
 	totalMem = memory/1073741824
-	return totalMem
+	return [totalMem, slots]
 
 def linuxRam():
 	totalMemory = os.popen("free -m").readlines()[1].split()[1]
@@ -87,6 +89,7 @@ def main():
 	print ("Version","."*22,version[1]+", Service Pack: "+version[2])
 
 	memory = get_mem();
-	print ("RAM","."*26, memory,'GB')
+	print ("RAM","."*26, memory[0],'GB')
+	print ("RAM Slots Used","."*15, memory[1])
 
 main()
