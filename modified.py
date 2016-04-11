@@ -1,63 +1,111 @@
 import os, socket, json, time
 import subprocess
 
-def modifed_files():
+def all_files_in_dir():
     process = os.popen('forfiles /C "cmd /c echo @file @fdate @ftime"')
     result = process.read()
     process.close()
-    lines = []
-    print(os.getcwd())
+    mod_list = []
     for root, dirs, files in os.walk("."):
-        data = {}
-        path = root.split('/')
-        print((len(path) - 1) * '---', os.path.basename(root))
+        # dirs = array of all found directories
+        # path = root.split('/')
+        # print (os.path.basename(root))
+        directory = {}
+        directory['DIR'] = root.strip().replace("\\\\","\\")
+        directory['NAME'] = ''
+        directory['TYPE'] = 'DIR'
+        directory['MODIFIED'] = ''
+        mod_list.append(directory)
         for file in files:
-            data = {}
-            # print(len(path) * '---', file)
-            # print(len(path)*"----",os.path.getmtime(file))
-            # print(len(path)*"----",os.path.getctime(file))
-            data['NAME'] = file
-            data['TYPE'] = 'FILE'
-            data['MODIFIED'] = os.path.getmtime(file) + os.path.getctime(file)
-            list.append(data)
+            filename, ext = os.path.splitext(file)
+            if file != '.' or file != '..':
+                path = os.path.join(root, file)
+                data = {}
+                data['DIR'] = root.strip().replace("\\\\","\\")
+                data['NAME'] = file.strip()
+                data['TYPE'] = 'FILE'
+                data['MODIFIED'] = os.path.getmtime(path) + os.path.getctime(path)
+                mod_list.append(data)
 
-    for line in result.split("\n"):
-        if len(line) > 0:
-            data = {}
-            lastModified = date_time_serial(line.split('"')[-1].strip())
-            data['MODIFIED'] = lastModified
-            data['NAME'] = line.split('"')[1].strip()
-            data9['TYPE'] = 'FILE'
-            lines.append(data)
+    return mod_list
 
-    return lines
-
-def date_time_serial(time_date): 
-    date = time_date.split(' ')[0].strip()
-    date_numbers = date.split('/')
-    date_number = 10000*float(date_numbers[2]) + 1000*float(date_numbers[0]) + float(date_numbers[1])
-
-    time = time_date.split(' ')[-2].strip()
-    time_numbers = time.split(':')
-    if time_date.split(' ')[-1].strip() == "PM":
-        time_numbers[0] = time_numbers[0] * 12
-
-    time_number = 3600*float(time_numbers[0])+60*float(time_numbers[1])+float(time_numbers[2])
-
-    serial_number = int(float(date_number)) + int(float(time_number))
-    return serial_number
-
-def check_db_file():
+def open_db_file():
     if os.path.isfile("last_modified.txt") == False:
         open("last_modified.txt", 'a')
 
     return "last_modified.txt"
 
+def return_file_contents(filename):
+    list = []
+    with open(filename) as file:
+        for line in file:
+            line = line.split('\n')[0]
+            line = line.replace("'","")
+            line = line.replace("\"","")
+            line = line.replace("}","")
+            line = line.replace("{","")
+            json = line.split(",")
+            data = {}
+            data[json[0].split(':')[0].strip()] = json[0].split(':')[-1].strip()
+            data[json[1].split(':')[0].strip()] = json[1].split(':')[-1].strip()
+            data[json[2].split(':')[0].strip()] = json[2].split(':')[-1].strip()
+            data[json[3].split(':')[0].strip()] = json[3].split(':')[-1].strip()
+            list.append(data)
+    return list
+
+def find_updates(files):
+    filename = open_db_file()
+    contents = return_file_contents(filename)
+    # print(contents)
+    names = find_values('NAME',contents)
+    print (len(names))
+    dirs = find_values('DIR',contents)
+    updates = []                                            #list of items to move
+
+    for item in files:
+        if item['NAME'] != '' and item['NAME'] not in names:#Never before used filename
+            contents.append(item)                           #add new item to db file (done later)
+            updates.append(item)                            
+        elif item['NAME'] != '' and item['NAME'] in names: #Name currently used
+            if item['DIR'] not in dirs:                    #This is a new directory
+                contents.append(item)                      #add new directory to db file (done later)
+                updates.append(item)    
+            elif item['DIR'] in dirs:                      #Directory currently used
+                obj = match_contents(item, contents)       #return matching file
+                if obj['MODIFIED'] != item['MODIFIED']:    #file been modified?
+                    contents[contents.index(obj)] = item   #Update line in db file (done later)
+                    updates.append(item)
+
+    write_changes(filename, contents)
+    return updates
+
+def find_values(id, jsonArray):
+    output = [];
+    for jsonObj in jsonArray:
+        output.append(jsonObj[id])
+    return output
+
+def match_contents(item, jsonArray):                        #used to find value from key value in json array
+    output = [];
+    for json in jsonArray:
+        if json['NAME'] == item['NAME'] and json['DIR'] == item['DIR']:
+            output = json
+    return output
+
+def write_changes(filename, contents):
+    open(filename, 'w').close()         #clear the file
+    file = open(filename, 'w')          #Open the file for writing
+    for item in contents:               #simply add everything in 'contents' array to file
+        file.write(json.dumps(item))
+        file.write('\n')
+    file.close()                        #close the file when done
+
 def main():
-    print ("Reading Modified Files in Current Dir")
-    filename = check_db_file()
-    # f=open(filename, 'a')
-    mod_files = modifed_files()
+    print ('-'*10,"Reading Modified Files in Current Dir",'-'*10)
+    # file = open(filename, 'w')
+    files = all_files_in_dir()
+    updates = find_updates(files)
+
     # f.write('hi there\n')
     # f.close()
 
