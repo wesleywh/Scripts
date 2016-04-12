@@ -35,10 +35,6 @@ python modified.py
 And it will output a file called "last_modified.txt" and show the following output in the console:
 ```
 ---------- Reading Modified Files in Current Dir ----------
-No Modified Files
-```
-or if files are modified:
-```
----------- Reading Modified Files in Current Dir ----------
-816 Files or directories have been modified
+0 File(s) have been modified
+0 Files(s) have been moved or deleted
 ```
