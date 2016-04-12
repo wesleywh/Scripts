@@ -13,9 +13,9 @@ and it will output information like the following:
 Computer Name ................ WorldWideWes
 Current Domain ............... PMPC-AD.byu.edu
 
-IP Address ................... 10.25.22.132
-Subnet Mask .................. 255.255.255.128
-Default Gateway .............. 10.25.22.129
+IP Address ................... 10.10.10.101
+Subnet Mask .................. 255.255.255.0
+Default Gateway .............. 10.10.10.10
 
 OS Type ...................... 64-Bit
 Logged In User ............... wesleywh
