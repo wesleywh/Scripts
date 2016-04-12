@@ -20,7 +20,7 @@ def all_files_in_dir():
                 data['DIR'] = root.strip().replace("\\\\","\\") #helps with file getting bloated on updates (otherwise adds more slashs)
                 data['NAME'] = file.strip()
                 data['TYPE'] = 'FILE'
-                data['MODIFIED'] = os.path.getmtime(path) + os.path.getctime(path)#get the files modified time (float format)
+                data['MODIFIED'] = os.path.getmtime('\\\\?\\'+ os.path.abspath(path)) + os.path.getctime('\\\\?\\'+ os.path.abspath(path))#get the files modified time (float format)
                 mod_list.append(data)                           #list of files and the directories they are in
 
     return mod_list                                             #return JSON list of all dirs and files in this directory
@@ -80,7 +80,7 @@ def find_updates(files):
                     updates.append(item)
 
     write_changes(filename, contents)
-    return updates
+    return updates, deletedFiles
 
 def find_deleted_files(folderContents, dbFileContents):     #returns a list of deleted files since last sync
     deleted = []
@@ -115,10 +115,9 @@ def main():
     os.system('cls')
     print ('-'*10,"Reading Modified Files in Current Dir",'-'*10)
     files = all_files_in_dir()
-    updates = find_updates(files)
-    if len(updates) > 0:
-        print(len(updates),"Files or directories have been modified")
-    else:
-        print ("No Modified Files")
-
+    updates, deleted = find_updates(files)
+    print(len(updates),"File(s) have been modified")
+    print (len(deleted),"Files(s) have been moved or deleted")
+    print("")
+    # print("-"*14,"Copying Files To Destination","-"*15)
 main()
