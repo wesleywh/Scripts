@@ -123,10 +123,12 @@ def write_changes(filename, contents):
     file.close()                                            #close the file when done
 
 def copytree(src, dst, symlinks=False, ignore=None):
-    if os.path.isdir(src):
-        shutil.copytree(src, dst, symlinks, ignore)
-    else:
-        shutil.copy2(src, dst)
+    if not os.path.exists(dst):
+        os.makedirs(dst)
+    # if os.path.isdir(src):
+    #     shutil.copytree(src, dst, symlinks, ignore)
+    # else:
+    #     shutil.copy2(src, dst)
 
 def move_files(updates):
     for file in updates:
@@ -135,14 +137,13 @@ def move_files(updates):
         else: 
             file['DIR'] = file['DIR'].replace(".\\\\","\\")
             file['DIR'] = file['DIR']+"\\"
-        print("Moving: "+file['DIR']+file['NAME'], end='\r')
+
         currentDirectory = os.path.dirname(os.path.realpath(__file__));
         filepath = currentDirectory+file['DIR']+file['NAME']
         filepath = filepath.replace(".\\","\\")
         copyToDirectory = 'C:\\Users\\wesleywh\\Desktop\\Copies'+file['DIR']+file['NAME']
         copyToDirectory = copyToDirectory.replace(".\\","\\")
         copyToDirectory = copyToDirectory.replace("\\\\","\\")
-        print("Copying File: "+filepath,end='\r')
         copytree(filepath, copyToDirectory)
 
 def main():
@@ -157,5 +158,5 @@ def main():
     print (len(deleted),"Files(s) have been moved or deleted")
     print("")
     print (' '*5,'-'*7,"2/2 Moving Modified Files",'-'*6)
-    move_files()
+    move_files(updates)
 main()
