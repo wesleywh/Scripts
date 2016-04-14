@@ -38,3 +38,25 @@ And it will output a file called "last_modified.txt" and show the following outp
 0 File(s) have been modified
 0 Files(s) have been moved or deleted
 ```
+####metadata.py
+This will attempt to display the metadata for a file. You will need to specify a single file or list of files to scan like the following:
+```
+python metadata.py -F last_modified.txt
+```
+The output will look like the following:
+```
+File Permissions .................... -rw-rw-rw-
+Size ................................ 0 BYTES
+User ID ............................. 0
+Group ID ............................ 0
+File Owner(s) ....................... NT AUTHORITY\SYSTEM:(I)(F)
+                                      BUILTIN\Administrators:(I)(F)
+                                      PMPC-AD\wesleywh:(I)(F)
+                                      PMPC-AD\RichardRobins:(I)(F)
+Creation Time ....................... 2016-04-11 09:27:42.605286
+Last File Access .................... 2016-04-11 09:27:42.605286
+Last Mod Time ....................... 2016-04-13 12:17:49.844588
+Symbolic Link ....................... False
+# of Locations on System ............ 1
+Device .............................. 1719608249
+```
