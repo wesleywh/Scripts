@@ -52,7 +52,6 @@ Group ID ............................ 0
 File Owner(s) ....................... NT AUTHORITY\SYSTEM:(I)(F)
                                       BUILTIN\Administrators:(I)(F)
                                       PMPC-AD\wesleywh:(I)(F)
-                                      PMPC-AD\RichardRobins:(I)(F)
 Creation Time ....................... 2016-04-11 09:27:42.605286
 Last File Access .................... 2016-04-11 09:27:42.605286
 Last Mod Time ....................... 2016-04-13 12:17:49.844588
