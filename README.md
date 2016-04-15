@@ -26,7 +26,7 @@ RAM Slots Used ............... 2
 ```
 
 ####modified.py
-This is used as a syncing method to keep track of all deleted files and modified files. This will scan the directory it is located in (including all sub folder and files) and return a list of updated files or deleted files. It keeps track of all files that it has scanned in a file called "last_modified.txt". This is how it will know if a file as been updated or deleted. It stores it like a JSON object which is later parsed for its information. It stores the filename, the directory it is located in, if it is a directory or file, and the last modified time (in float format for easy comparison).
+This is used as a syncing method to keep track of all deleted files and modified files. This will scan the directory it is located in (including all sub folder and files) and return a list of updated files or deleted files. It keeps track of all files that it has scanned in a file called "last_modified.txt". This is how it will know if a file as been updated or deleted. It stores it like a JSON object which is later parsed for its information. It stores the filename, the directory it is located in, if it is a directory or file, and the last modified time (in float format for easy comparison). Then it will sync to another folder location. Currently this doesn't support network folders but that can be changed in the code.
 
 Simply run the file the following:
 ```
@@ -34,9 +34,26 @@ python modified.py
 ```
 And it will output a file called "last_modified.txt" and show the following output in the console:
 ```
----------- Reading Modified Files in Current Dir ----------
-0 File(s) have been modified
+========== Reading Modified Files in Current Dir ==========
+      ----- 1/2 Finding All Modified Files -----
+
+1/4 Scanning Files: .\php_imagick-3.3.0rc1-5.5-ts-vc11-x86\watermark.phpdbGICKb.libbte.hhhvate.h
+...Done.
+
+...Done.
+3/4 Finding Deleted Files...
+...Done.
+4/4 Finding All Modified Files...
+.\php_imagick-3.3.0rc1-5.5-ts-vc11-x86lude\wandck
+...Done.
+
+817 File(s) have been added or modified
 0 Files(s) have been moved or deleted
+
+      ------- 2/2 Moving Modified Files ------
+Copying File:C:\Users\wesleywh\Desktop\Copies\ImageMagick-6.9.1-2-vc11-x86 (1)\include\magick\distribute-cache-private.h
+Copying File:C:\Users\wesleywh\Desktop\Copies\php_imagick-3.3.0rc1-5.5-ts-vc11-x86\watermark.phpdbGICKb.libbte.hhh
+...Done.
 ```
 ####metadata.py
 This will attempt to display the metadata for a file. You will need to specify a single file or list of files to scan like the following:
