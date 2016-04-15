@@ -72,7 +72,7 @@ def find_updates(files):
 
     print("4/4 Finding All Modified Files...")
     for item in files:
-        print(item['DIR'],end='\r')
+        print("Searching: "+item['DIR'],end='\r')
         if item['NAME'] != '' and item['NAME'] != '.' and item['NAME'] != '..' and item['NAME'] not in names:#Never before used filename
             contents.append(item)                           #add new item to db file (done later)
             updates.append(item)                            
@@ -96,8 +96,8 @@ def find_deleted_files(folderContents, dbFileContents):     #returns a list of d
     print("3/4 Finding Deleted Files...")
     for content in dbFileContents:
         obj = match_contents(content, folderContents)       #match the db file with the actual file
-        if obj == []:                
-            print("Found: "+obj['NAME'],end='\r')
+        if obj == []:               
+            print("Found: "+content['DIR']+content['NAME'],end='\r')
             deleted.append(content)                         #if it can't find a match then it has been deleted
     return deleted
 
@@ -149,6 +149,28 @@ def move_files(updates):
         copyToDirectory = copyToDirectory.replace("\\\\","\\")
         copytree(filepath, copyToDirectory, file['NAME'])
 
+def delete_files(deleted):
+    for file in deleted:
+        if file['DIR'] == '.' or file['DIR'] == '..':
+            file['DIR'] = "\\"
+        else: 
+            file['DIR'] = file['DIR'].replace(".\\\\","\\")
+            file['DIR'] = file['DIR']+"\\"
+        currentDirectory = os.path.dirname(os.path.realpath(__file__));
+        copyToDirectory = 'C:\\Users\\wesleywh\\Desktop\\Copies'+file['DIR']+file['NAME']
+        copyToDirectory = copyToDirectory.replace(".\\","\\")
+        copyToDirectory = copyToDirectory.replace("\\\\","\\")
+        remove(copyToDirectory)
+
+def remove(dst):
+    print("Removing: "+dst,end='\r')
+    if os.path.isdir(dst) and os.listdir(dst) =="":     #empty directory
+        os.rmdir(dst)
+    elif os.path.isdir(dst) and os.listdir(dst) !="":   #not empty directory
+        shutil.rmtree(dst)
+    elif os.path.isfile(dst):                           #is a file
+        os.remove(dst)
+
 def main():
     os.system('cls')
     print ('='*10,"Reading Modified Files in Current Dir",'='*10)
@@ -161,6 +183,12 @@ def main():
     print (len(deleted),"Files(s) have been moved or deleted")
     print("")
     print (' '*5,'-'*7,"2/2 Moving Modified Files",'-'*6)
+    print("1/2 Syncing Modified/Added Files...")
     move_files(updates)
+    print("")
+    print("...Done.")
+    print("2/2 Syncing Deleted Files...")
+    delete_files(deleted)
+    print("")
     print("...Done.")
 main()
