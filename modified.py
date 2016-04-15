@@ -134,36 +134,42 @@ def copytree(src, dst, filename, symlinks=False, ignore=None):
     else:
         shutil.copy2(src, dst)
 
-def move_files(updates, directory):
+def move_files(updates, directory, scanDir=""):
     for file in updates:
-        if file['DIR'] == '.' or file['DIR'] == '..':
-            file['DIR'] = "\\"
-        else: 
-            file['DIR'] = file['DIR'].replace(".\\\\","\\")
-            file['DIR'] = file['DIR']+"\\"
+        if file['NAME'] != "last_modified.txt" and file['NAME'] != "modified.py":
+            if file['DIR'] == '.' or file['DIR'] == '..':                     #few lines, used to clean up unwanted dir and names
+                file['DIR'] = "\\"
+            else: 
+                file['DIR'] = file['DIR'].replace(".\\\\","\\")
+                file['DIR'] = file['DIR']+"\\"
 
-        currentDirectory = os.path.dirname(os.path.realpath(__file__));
-        filepath = currentDirectory+file['DIR']+file['NAME']
-        filepath = filepath.replace(".\\","\\")
-        # copyToDirectory = 'C:\\Users\\wesleywh\\Desktop\\Copies'+file['DIR']+file['NAME']
-        copyToDirectory = directory+file['DIR']+file['NAME']
-        copyToDirectory = copyToDirectory.replace(".\\","\\")
-        copyToDirectory = copyToDirectory.replace("\\\\","\\")
-        copytree(filepath, copyToDirectory, file['NAME'])
+            if scanDir == "":
+                currentDirectory = os.path.dirname(os.path.realpath(__file__));#get current dir 
+            else:
+                currentDirectory = scanDir
+            filepath = currentDirectory+file['DIR']+file['NAME']
+            filepath = filepath.replace(".\\","\\")
+            copyToDirectory = directory+file['DIR']+file['NAME']
+            copyToDirectory = copyToDirectory.replace(".\\","\\")
+            copyToDirectory = copyToDirectory.replace("\\\\","\\")
+            copytree(filepath, copyToDirectory, file['NAME'])
 
-def delete_files(deleted, directory):
+def delete_files(deleted, directory, scanDir=""):
     for file in deleted:
-        if file['DIR'] == '.' or file['DIR'] == '..':
-            file['DIR'] = "\\"
-        else: 
-            file['DIR'] = file['DIR'].replace(".\\\\","\\")
-            file['DIR'] = file['DIR']+"\\"
-        currentDirectory = os.path.dirname(os.path.realpath(__file__));
-        # copyToDirectory = 'C:\\Users\\wesleywh\\Desktop\\Copies'+file['DIR']+file['NAME']
-        copyToDirectory = directory+file['DIR']+file['NAME']
-        copyToDirectory = copyToDirectory.replace(".\\","\\")
-        copyToDirectory = copyToDirectory.replace("\\\\","\\")
-        remove(copyToDirectory)
+        if file['NAME'] != "last_modified.txt" and file['NAME'] != "modified.py":
+            if file['DIR'] == '.' or file['DIR'] == '..':
+                file['DIR'] = "\\"
+            else: 
+                file['DIR'] = file['DIR'].replace(".\\\\","\\")
+                file['DIR'] = file['DIR']+"\\"
+            if scanDir == "":
+                currentDirectory = os.path.dirname(os.path.realpath(__file__));#get current dir 
+            else:
+                currentDirectory = scanDir
+            copyToDirectory = directory+file['DIR']+file['NAME']
+            copyToDirectory = copyToDirectory.replace(".\\","\\")
+            copyToDirectory = copyToDirectory.replace("\\\\","\\")
+            remove(copyToDirectory)
 
 def remove(dst):
     print("Removing: "+dst,end='\r')
@@ -179,7 +185,8 @@ def clear_db_file():
 
 def main():
     parser = argparse.ArgumentParser(description='Available Command Line Switches')
-    parser.add_argument('-D',metavar='Location', nargs=1, help="Location To Sync Your Files To EX: -D C:\\user\\wesleywh\\")
+    parser.add_argument('-S',metavar='Source', nargs=1, help="Location To your source directory to scan. Otherwise it defaults to wherever the modified.py file is located")
+    parser.add_argument('-D',metavar='Location', nargs=1, help="Desitnation location To sync your files To EX: -D C:\\user\\wesleywh\\")
     parser.add_argument('-F', help="Perform A Fresh Sync, recreates the entire DB File", action="store_true")
 
     #all all available arguments to the 'args' variable
@@ -188,6 +195,10 @@ def main():
         print("No sync location was passed. Please use \"EX: python modified.py -D C:\\users\\myname\\myfolder\"")
         return
     os.system('cls')
+    if args.S != None:
+        source = args.S[0]
+    else:
+        source = ""
     if args.F == True:
         print("Performing Clean Sync")
         clear_db_file()
@@ -202,11 +213,12 @@ def main():
     print("")
     print (' '*5,'-'*7,"2/2 Moving Modified Files",'-'*6)
     print("1/2 Syncing Modified/Added Files...")
-    move_files(updates, args.D[0])
+    move_files(updates, args.D[0], source)
     print("")
     print("...Done.")
     print("2/2 Syncing Deleted Files...")
-    delete_files(deleted, args.D[0])
+    delete_files(deleted, args.D[0], source)
     print("")
     print("...Done.")
+
 main()
