@@ -59,6 +59,9 @@ Searching: .\php_imagick-3.3.0rc1-5.5-ts-vc11-x86lude\wandck
 Removing: C:\Users\wesleywh\Desktop\Copies\here.txt
 ...Done.
 ```
+######Final Note for modified.py
+The copy to location is hard coded in the functions "delete_files" and "move_files" this will have to be changed. 
+
 ####metadata.py
 This will attempt to display the metadata for a file. You will need to specify a single file or list of files to scan like the following:
 ```
