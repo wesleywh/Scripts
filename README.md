@@ -39,20 +39,24 @@ And it will output a file called "last_modified.txt" and show the following outp
 
 1/4 Scanning Files: .\php_imagick-3.3.0rc1-5.5-ts-vc11-x86\watermark.phpdbGICKb.libbte.hhhvate.h
 ...Done.
-
+2/4 Scanning DB File:.\here.txtick-3.3.0rc1-5.5-ts-vc11-x86\watermark.phpdbGICKb.libbte.hhhvate.h
 ...Done.
 3/4 Finding Deleted Files...
+Found Deleted File(s): here.txt
 ...Done.
 4/4 Finding All Modified Files...
-.\php_imagick-3.3.0rc1-5.5-ts-vc11-x86lude\wandck
+Searching: .\php_imagick-3.3.0rc1-5.5-ts-vc11-x86lude\wandck
 ...Done.
 
-817 File(s) have been added or modified
-0 Files(s) have been moved or deleted
+0 File(s) have been added or modified
+1 Files(s) have been moved or deleted
 
       ------- 2/2 Moving Modified Files ------
-Copying File:C:\Users\wesleywh\Desktop\Copies\ImageMagick-6.9.1-2-vc11-x86 (1)\include\magick\distribute-cache-private.h
-Copying File:C:\Users\wesleywh\Desktop\Copies\php_imagick-3.3.0rc1-5.5-ts-vc11-x86\watermark.phpdbGICKb.libbte.hhh
+1/2 Syncing Modified/Added Files...
+
+...Done.
+2/2 Syncing Deleted Files...
+Removing: C:\Users\wesleywh\Desktop\Copies\here.txt
 ...Done.
 ```
 ####metadata.py
