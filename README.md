@@ -30,8 +30,10 @@ This is used as a syncing method to keep track of all deleted files and modified
 
 Simply run the file the following:
 ```
-python modified.py
+python modified.py -D C:\Users\wesleywh\Desktop\newFolder
 ```
+You can also use the "-F" option to force a resync of everything. This will rebuild the DB File as well
+
 And it will output a file called "last_modified.txt" and show the following output in the console:
 ```
 ========== Reading Modified Files in Current Dir ==========
