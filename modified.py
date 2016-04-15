@@ -1,6 +1,7 @@
 import os, socket, json, time                   #for file timse, os commands, jsons, threading
 import subprocess                               #for system process
-import shutil, errno                               #for file copy
+import shutil, errno                            #for file copy
+import argparse                                 #used for allowing command line switches 
 
 def all_files_in_dir():
     process = os.popen('forfiles /C "cmd /c echo @file @fdate @ftime"')
@@ -133,7 +134,7 @@ def copytree(src, dst, filename, symlinks=False, ignore=None):
     else:
         shutil.copy2(src, dst)
 
-def move_files(updates):
+def move_files(updates, directory):
     for file in updates:
         if file['DIR'] == '.' or file['DIR'] == '..':
             file['DIR'] = "\\"
@@ -144,12 +145,13 @@ def move_files(updates):
         currentDirectory = os.path.dirname(os.path.realpath(__file__));
         filepath = currentDirectory+file['DIR']+file['NAME']
         filepath = filepath.replace(".\\","\\")
-        copyToDirectory = 'C:\\Users\\wesleywh\\Desktop\\Copies'+file['DIR']+file['NAME']
+        # copyToDirectory = 'C:\\Users\\wesleywh\\Desktop\\Copies'+file['DIR']+file['NAME']
+        copyToDirectory = directory+file['DIR']+file['NAME']
         copyToDirectory = copyToDirectory.replace(".\\","\\")
         copyToDirectory = copyToDirectory.replace("\\\\","\\")
         copytree(filepath, copyToDirectory, file['NAME'])
 
-def delete_files(deleted):
+def delete_files(deleted, directory):
     for file in deleted:
         if file['DIR'] == '.' or file['DIR'] == '..':
             file['DIR'] = "\\"
@@ -157,7 +159,8 @@ def delete_files(deleted):
             file['DIR'] = file['DIR'].replace(".\\\\","\\")
             file['DIR'] = file['DIR']+"\\"
         currentDirectory = os.path.dirname(os.path.realpath(__file__));
-        copyToDirectory = 'C:\\Users\\wesleywh\\Desktop\\Copies'+file['DIR']+file['NAME']
+        # copyToDirectory = 'C:\\Users\\wesleywh\\Desktop\\Copies'+file['DIR']+file['NAME']
+        copyToDirectory = directory+file['DIR']+file['NAME']
         copyToDirectory = copyToDirectory.replace(".\\","\\")
         copyToDirectory = copyToDirectory.replace("\\\\","\\")
         remove(copyToDirectory)
@@ -171,8 +174,23 @@ def remove(dst):
     elif os.path.isfile(dst):                           #is a file
         os.remove(dst)
 
+def clear_db_file():
+    open("last_modified.txt", 'w').close()
+
 def main():
+    parser = argparse.ArgumentParser(description='Available Command Line Switches')
+    parser.add_argument('-D',metavar='Location', nargs=1, help="Location To Sync Your Files To EX: -D C:\\user\\wesleywh\\")
+    parser.add_argument('-F', help="Perform A Fresh Sync, recreates the entire DB File", action="store_true")
+
+    #all all available arguments to the 'args' variable
+    args = parser.parse_args()
+    if args.D == None:
+        print("No sync location was passed. Please use \"EX: python modified.py -D C:\\users\\myname\\myfolder\"")
+        return
     os.system('cls')
+    if args.F == True:
+        print("Performing Clean Sync")
+        clear_db_file()
     print ('='*10,"Reading Modified Files in Current Dir",'='*10)
     print (' '*5,'-'*5,"1/2 Finding All Modified Files",'-'*5)
     print("")
@@ -184,11 +202,11 @@ def main():
     print("")
     print (' '*5,'-'*7,"2/2 Moving Modified Files",'-'*6)
     print("1/2 Syncing Modified/Added Files...")
-    move_files(updates)
+    move_files(updates, args.D[0])
     print("")
     print("...Done.")
     print("2/2 Syncing Deleted Files...")
-    delete_files(deleted)
+    delete_files(deleted, args.D[0])
     print("")
     print("...Done.")
 main()
