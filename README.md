@@ -11,14 +11,14 @@ and it will output information like the following:
 -------------------- Computer Information --------------------
 
 Computer Name ................ WorldWideWes
-Current Domain ............... PMPC-AD.byu.edu
+Current Domain ............... MyDomain.edu
 
 IP Address ................... 10.10.10.101
 Subnet Mask .................. 255.255.255.0
 Default Gateway .............. 10.10.10.10
 
 OS Type ...................... 64-Bit
-Logged In User ............... wesleywh
+Logged In User ............... user
 Machine ...................... Windows 10
 Version ...................... 10.0.10240, Service Pack: SP0
 RAM .......................... 8.0 GB
@@ -30,7 +30,7 @@ This is used as a syncing method to keep track of all deleted files and modified
 
 Simply run the file the following:
 ```
-python modified.py -D C:\Users\wesleywh\Desktop\newFolder
+python modified.py -D C:\Users\user\Desktop\newFolder
 ```
 You can also use the "-F" option to force a resync of everything. This will rebuild the DB File as well
 
@@ -58,7 +58,7 @@ Searching: .\php_imagick-3.3.0rc1-5.5-ts-vc11-x86lude\wandck
 
 ...Done.
 2/2 Syncing Deleted Files...
-Removing: C:\Users\wesleywh\Desktop\Copies\here.txt
+Removing: C:\Users\user\Desktop\Copies\here.txt
 ...Done.
 ```
 ######Final Note for modified.py
@@ -77,7 +77,7 @@ User ID ............................. 0
 Group ID ............................ 0
 File Owner(s) ....................... NT AUTHORITY\SYSTEM:(I)(F)
                                       BUILTIN\Administrators:(I)(F)
-                                      PMPC-AD\wesleywh:(I)(F)
+                                      MyDomain\user:(I)(F)
 Creation Time ....................... 2016-04-11 09:27:42.605286
 Last File Access .................... 2016-04-11 09:27:42.605286
 Last Mod Time ....................... 2016-04-13 12:17:49.844588
